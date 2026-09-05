@@ -1,55 +1,57 @@
 @import "tailwindcss";
 
 @theme {
-  /* Colors from Prototype */
   --color-surface-container-high: #282a30;
   --color-surface-container: #1e1f26;
   --color-surface-container-low: #191b22;
   --color-surface-container-lowest: #0c0e14;
-  --color-background: #0e1117;
+  --color-surface-dim: #111319;
   --color-surface: #111319;
+  --color-on-surface: #e2e2eb;
+  --color-on-surface-variant: #94a3b8;
   
   --color-primary-container: #00ff66;
   --color-on-primary-container: #00551e;
+  --color-primary-fixed: #6bff83;
+  --color-on-primary-fixed-variant: #00531b;
+  --color-primary: #edffe8;
+  --color-on-primary: #003911;
   
   --color-secondary-container: #ff506e;
-  --color-on-secondary-container: #fff;
+  --color-on-secondary-container: #ffffff;
+  --color-secondary: #ffb2b8;
+  --color-on-secondary: #67001d;
   
-  --color-on-surface: #f1f5f9;
-  --color-on-surface-variant: #94a3b8;
-  
-  --color-primary-fixed: #6bff83;
   --color-tertiary-container: #f7df00;
   --color-on-tertiary-container: #6d6200;
   --color-tertiary-fixed: #fde400;
+  --color-on-tertiary: #373100;
 
-  /* Custom UNO Colors */
-  --color-uno-red: #e11d48;
-  --color-uno-yellow: #f59e0b;
-  --color-uno-green: #16a34a;
-  --color-uno-blue: #2563eb;
-  --color-uno-black: #18181b;
-
-  /* Fonts */
-  --font-space: "Space Grotesk", sans-serif;
-  --font-mono: "JetBrains Mono", "Space Mono", monospace;
-  
-  /* Font Sizes from Prototype */
-  --text-headline-lg-mobile: 26px;
-  --text-headline-md: 22px;
-  --text-label-lg: 14px;
-  --text-label-md: 12px;
-  --text-label-sm: 10px;
-  --text-body-lg: 16px;
-  --text-body-md: 14px;
-  --text-body-sm: 12px;
-
-  /* Custom Spacing */
+  --spacing-gutter-desktop: 24px;
   --spacing-gutter-mobile: 12px;
   --spacing-space-xs: 4px;
   --spacing-space-sm: 8px;
   --spacing-space-md: 16px;
   --spacing-space-lg: 24px;
+  --spacing-space-xl: 32px;
+
+  --font-space: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", "Space Mono", monospace;
+  --font-headline-lg-mobile: "Space Grotesk";
+  --font-headline-md: "Space Grotesk";
+  --font-label-lg: "JetBrains Mono";
+  --font-label-md: "JetBrains Mono";
+  --font-label-sm: "JetBrains Mono";
+  --font-body-lg: "Space Mono";
+  --font-body-md: "Space Mono";
+  --font-body-sm: "Space Mono";
+
+  --animate-scrollLeft: scrollLeft 15s linear infinite;
+
+  @keyframes scrollLeft {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+  }
 }
 
 @layer base {
@@ -57,7 +59,7 @@
     width: 100vw;
     margin: 0;
     padding: 0;
-    background-color: var(--color-background);
+    background-color: #0d1017;
   }
   body {
     overscroll-behavior: none;
@@ -68,9 +70,19 @@
 
 ::-webkit-scrollbar { display: none; }
 
+/* Font size utility classes from the config */
+.text-headline-lg-mobile { font-size: 26px; line-height: 32px; letter-spacing: 0em; font-weight: 700; }
+.text-body-lg { font-size: 16px; line-height: 24px; font-weight: 400; }
+.text-headline-md { font-size: 22px; line-height: 28px; letter-spacing: 0em; font-weight: 700; }
+.text-label-lg { font-size: 14px; line-height: 18px; letter-spacing: 0.08em; font-weight: 700; }
+.text-body-sm { font-size: 12px; line-height: 16px; font-weight: 400; }
+.text-headline-lg { font-size: 32px; line-height: 38px; letter-spacing: -0.01em; font-weight: 700; }
+.text-label-sm { font-size: 10px; line-height: 12px; letter-spacing: 0.1em; font-weight: 700; }
+.text-label-md { font-size: 12px; line-height: 16px; letter-spacing: 0.06em; font-weight: 700; }
+.text-body-md { font-size: 14px; line-height: 20px; font-weight: 400; }
+
 .scanlines {
-  background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.25) 50%),
-              linear-gradient(90deg, rgba(255,0,0,0.03), rgba(0,255,0,0.01), rgba(0,0,255,0.03));
+  background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.25) 50%), linear-gradient(90deg, rgba(255,0,0,0.03), rgba(0,255,0,0.01), rgba(0,0,255,0.03));
   background-size: 100% 3px, 4px 100%;
   pointer-events: none;
 }
@@ -87,7 +99,13 @@
   font-style: italic;
   font-weight: 800;
 }
+.uno-red { background-color: #e11d48; color: #e11d48; }
+.uno-yellow { background-color: #f59e0b; color: #d97706; }
+.uno-green { background-color: #16a34a; color: #15803d; }
+.uno-blue { background-color: #2563eb; color: #1d4ed8; }
+.uno-black { background-color: #18181b; color: #18181b; }
 
+/* Tilted White Ellipse */
 .uno-oval {
   background-color: #ffffff;
   border-radius: 50%;
@@ -98,6 +116,7 @@
   justify-content: center;
 }
 
+/* 4-Color Wild Quadrant Wheel */
 .wild-wheel {
   width: 100%;
   height: 100%;
@@ -108,11 +127,11 @@
   justify-content: center;
 }
 
+/* Direction Ring Dash Animation */
 @keyframes rotateClockwise {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
-
 .direction-spin {
   animation: rotateClockwise 20s linear infinite;
 }

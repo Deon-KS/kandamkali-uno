@@ -5,9 +5,10 @@ import GameBoard from './components/GameBoard';
 import './index.css';
 
 function GameRouter() {
-  const { roomCode } = useGameState();
+  const { roomCode, gameState } = useGameState();
   
-  if (!roomCode) {
+  // Show lobby if no room code, or if room is created but game hasn't started
+  if (!roomCode || !gameState || gameState.meta?.status === 'LOBBY') {
     return <Lobby />;
   }
   
