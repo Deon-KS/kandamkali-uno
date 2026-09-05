@@ -162,6 +162,7 @@ export function playCardEngine(roomData, playerId, cardIndex, selectedColor = nu
     applyDaviChaos(gs, players);
   }
 
+  gs.lastActionId = Date.now();
   return { ...roomData, players, gameState: gs };
 }
 
@@ -187,6 +188,7 @@ export function drawCardEngine(roomData, playerId) {
     applyDaviChaos(gs, players);
   }
 
+  gs.lastActionId = Date.now();
   return { ...roomData, players, gameState: gs };
 }
 

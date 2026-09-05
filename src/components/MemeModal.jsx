@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { audioManager } from '../services/audioManager';
 
-export default function MemeModal({ isOpen, onClose }) {
+export default function MemeModal({ isOpen, onClose, onPlaySound }) {
   const [toastMessage, setToastMessage] = useState('');
 
   if (!isOpen) return null;
@@ -13,17 +13,16 @@ export default function MemeModal({ isOpen, onClose }) {
   };
 
   const memes = [
-    { id: 'pavanayi', title: 'Pavanayi Shavamayi', sub: '"Ippo ശവമായി!"', desc: 'Nadodikkattu', emoji: '🔥', color: 'amber' },
-    { id: 'sadhanam', title: 'Sadhanam Kayyilundo?', sub: '"സാധനം കയ്യിലുണ്ടോ?"', desc: 'Pattana Pravesham', emoji: '❓', color: 'emerald' },
-    { id: 'scene', title: 'Scene Contra!', sub: '"സീൻ കോൺട്രാ മോനേ!"', desc: 'Premam Roast', emoji: '⚡', color: 'rose' },
-    { id: 'vidhikkan', title: 'Vidhikkan Njan Aaru?', sub: '"വിധിക്കാൻ ഞാൻ ആര്?"', desc: 'Salim Kumar Iconic', emoji: '⚖️', color: 'sky' },
-    { id: 'dha', title: 'Dha Dha Poyi!', sub: '"ദാ ദാ പോയി..."', desc: 'Kalyanaraman', emoji: '💨', color: 'purple' },
-    { id: 'entharo', title: 'Entharo Mahanubhavulu', sub: '"എന്തരോ മഹാനുഭാവുലു"', desc: 'Jagathy Sarcasm', emoji: '🎶', color: 'yellow' },
+    { id: 'eagle', file: 'Eagle hahahaha.mpeg', title: 'Eagle Laugh', sub: 'Hahaha', desc: 'Villain Laugh', emoji: '🦅', color: 'amber' },
+    { id: 'grr', file: 'Grrrrr.mpeg', title: 'Grrrrr!', sub: 'Angry', desc: 'Roar', emoji: '😡', color: 'emerald' },
+    { id: 'koothi', file: 'Koothi Kuthi.mpeg', title: 'Koothi Kuthi', sub: 'Classic', desc: 'Comedy', emoji: '🤣', color: 'rose' },
+    { id: 'sayipp', file: 'Sayipp crying.mpeg', title: 'Sayipp Crying', sub: 'Sad', desc: 'Crying', emoji: '😭', color: 'sky' },
+    { id: 'kaayal', file: 'Vemabanaattu kaayal.mpeg', title: 'Vembanattu Kaayal', sub: 'Lake', desc: 'Song', emoji: '🌊', color: 'purple' }
   ];
 
   const handlePlayMeme = (meme) => {
     setToastMessage(`Broadcasting: ${meme.title}!`);
-    audioManager.play(meme.id); // Triggers real audio if we had files mapped
+    onPlaySound(meme);
     setTimeout(() => {
       setToastMessage('');
       onClose();

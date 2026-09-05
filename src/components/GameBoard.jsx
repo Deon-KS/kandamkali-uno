@@ -5,19 +5,36 @@ import Card from './Card';
 import MemeModal from './MemeModal';
 
 export default function GameBoard() {
-  const { gameState: room, playerId, updateState } = useGameState();
+  const { gameState: room, playerId, updateState, setRoomCode, setGameState, setIsOffline, isMuted, setIsMuted } = useGameState();
   const [isMemeOpen, setIsMemeOpen] = useState(false);
   const [pendingWildCardIndex, setPendingWildCardIndex] = useState(null);
   const [showDavi, setShowDavi] = useState(false);
   const [daviEvent, setDaviEvent] = useState(null);
   const [isLogOpen, setIsLogOpen] = useState(false);
+  const [showExitConfirm, setShowExitConfirm] = useState(false);
+  const [showUnoPopup, setShowUnoPopup] = useState(false);
+  const [unoPlayerName, setUnoPlayerName] = useState("");
+  const [ping, setPing] = useState(24);
+
+  // Network Ping Simulator
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (navigator.connection && navigator.connection.rtt) {
+         setPing(navigator.connection.rtt + Math.floor(Math.random() * 8) - 4);
+      } else {
+         setPing(prev => Math.max(12, Math.min(80, prev + (Math.floor(Math.random() * 11) - 5))));
+      }
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
   if (!room || !room.players || !room.gameState) return null;
 
   const gs = room.gameState;
   const playersMap = room.players;
+  const myPlayer = playersMap[playerId];
 
-  const myHand = playersMap[playerId]?.hand || [];
+  const myHand = myPlayer?.hand || [];
   const activeCard = gs.topDiscardCard;
   const activeColor = gs.activeColor;
   const isMyTurn = gs.currentTurnPlayerId === playerId;
@@ -98,8 +115,105 @@ export default function GameBoard() {
     if (gs.daviEvent && gs.daviEvent.id !== daviEvent?.id) {
       setDaviEvent(gs.daviEvent);
       setShowDavi(true);
+      
+      if (!isMuted) {
+        if (currentAudioRef.current) {
+          currentAudioRef.current.pause();
+        }
+        const audio = new Audio('/sounds/System Override Sound.mp3');
+        currentAudioRef.current = audio;
+        audio.play().catch(e => console.error("System Override audio play failed:", e));
+      }
     }
   }, [gs.daviEvent?.id]);
+
+  const lastPlayedRef = React.useRef(null);
+  const currentAudioRef = React.useRef(null);
+
+  // Stop audio immediately when muted
+  useEffect(() => {
+    if (isMuted && currentAudioRef.current) {
+      currentAudioRef.current.pause();
+    }
+  }, [isMuted]);
+
+  // Global Audio Listener
+  useEffect(() => {
+    if (gs.lastSound && gs.lastSound.file) {
+      // Don't play if it's older than 10 seconds or if we just handled this exact timestamp
+      if (Date.now() - gs.lastSound.timestamp < 10000 && lastPlayedRef.current !== gs.lastSound.timestamp) {
+        if (!isMuted) {
+          if (currentAudioRef.current) {
+            currentAudioRef.current.pause(); // stop previous overlapping sound
+          }
+          const audio = new Audio(`/sounds/${gs.lastSound.file}`);
+          currentAudioRef.current = audio;
+          audio.play().catch(e => console.error("Audio play failed:", e));
+        }
+        // Mark as handled even if muted, so it doesn't play later if we unmute
+        lastPlayedRef.current = gs.lastSound.timestamp;
+      }
+    }
+  }, [gs.lastSound?.timestamp, gs.lastSound?.file, isMuted]);
+
+  const lastActionPlayedRef = React.useRef(null);
+
+  // Card Action Listener (Draw / Play)
+  useEffect(() => {
+    if (gs.lastActionId && gs.lastActionId !== lastActionPlayedRef.current) {
+      lastActionPlayedRef.current = gs.lastActionId;
+      if (!isMuted && !showDavi) {
+        const audio = new Audio('/sounds/Drawing Playing Cards Sound.mp3');
+        audio.volume = 0.6; // Slightly quieter than memes so it doesn't get annoying
+        audio.play().catch(e => console.error("Card action audio play failed:", e));
+      }
+    }
+  }, [gs.lastActionId, isMuted, showDavi]);
+
+  // Global UNO Listener
+  useEffect(() => {
+    if (gs.unoEvent?.id) {
+      setUnoPlayerName(gs.unoEvent.playerName);
+      setShowUnoPopup(true);
+      const timer = setTimeout(() => setShowUnoPopup(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [gs.unoEvent?.id]);
+
+  const handleCallUno = () => {
+    if (!myPlayer || myPlayer.cardCount !== 1) return;
+
+    const newChatId = Date.now();
+    const newChat = {
+      ...(room.chat || {}),
+      [newChatId]: {
+        sender: 'SYSTEM',
+        text: `📢 ${myPlayer.name} yelled UNO!`,
+        timestamp: newChatId
+      }
+    };
+
+    const newGs = { 
+      ...gs, 
+      unoEvent: { id: Date.now(), playerName: myPlayer.name } 
+    };
+
+    updateState({ ...room, gameState: newGs, chat: newChat });
+  };
+
+  const handlePlaySound = (meme) => {
+    const newState = { 
+      ...room, 
+      gameState: {
+        ...gs,
+        lastSound: {
+          file: meme.file,
+          timestamp: Date.now()
+        }
+      } 
+    };
+    updateState(newState);
+  };
 
   const handleDraw = () => {
     if (!isMyTurn) return;
@@ -234,6 +348,9 @@ export default function GameBoard() {
       <header className="fixed top-0 w-full z-40 pt-safe bg-[#111319]/90 backdrop-blur-md border-b border-white/5 left-0 right-0">
         <div className="h-14 px-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
+            <button onClick={() => setShowExitConfirm(true)} className="w-9 h-9 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center text-slate-300 transition-colors shadow-sm active:scale-95" title="Leave Game">
+              <span className="material-symbols-outlined text-lg">arrow_back</span>
+            </button>
             <div className="w-9 h-9 rounded-lg bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 font-black text-base shadow-sm">
               🃏
             </div>
@@ -244,7 +361,14 @@ export default function GameBoard() {
                   ARENA 04
                 </span>
               </div>
-              <span className="text-[11px] font-mono text-slate-400">CLASSIC 4-PLAYER • 24ms</span>
+              <div className="flex items-center gap-1 text-[11px] font-mono text-slate-400">
+                <span className="flex items-center gap-1">
+                  <span className={`w-1.5 h-1.5 rounded-full ${ping < 50 ? 'bg-emerald-500' : ping < 100 ? 'bg-amber-500' : 'bg-red-500'}`}></span>
+                  NODE: ASIA-SOUTH1
+                </span>
+                <span className="opacity-50">•</span>
+                <span className={`${ping < 50 ? 'text-emerald-400/80' : ping < 100 ? 'text-amber-400/80' : 'text-red-400/80'}`}>{ping}ms</span>
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
@@ -252,8 +376,8 @@ export default function GameBoard() {
               <span className="material-symbols-outlined text-[16px]">campaign</span>
               <span>MEME AUDIO</span>
             </button>
-            <button aria-label="Audio Mute" className="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-slate-700 active:scale-95">
-              <span className="material-symbols-outlined text-[18px]">volume_up</span>
+            <button onClick={() => setIsMuted(!isMuted)} aria-label="Audio Mute" className="w-8 h-8 rounded-full bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-slate-700 active:scale-95 transition-colors">
+              <span className="material-symbols-outlined text-[18px]">{isMuted ? 'volume_off' : 'volume_up'}</span>
             </button>
           </div>
         </div>
@@ -413,8 +537,16 @@ export default function GameBoard() {
               <span className="material-symbols-outlined text-emerald-400 text-xl">add_circle</span>
               <span>DRAW CARD</span>
             </button>
-            <button className="h-12 rounded-xl bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 hover:brightness-110 active:scale-95 flex items-center justify-center gap-2 text-white font-black text-lg tracking-wider shadow-[0_0_20px_rgba(244,63,94,0.5)] transition-all animate-pulse">
-              <span className="material-symbols-outlined text-white text-2xl font-black">campaign</span>
+            <button 
+              onClick={handleCallUno} 
+              disabled={!myPlayer || myPlayer.cardCount !== 1}
+              className={`h-12 px-6 rounded-xl flex items-center justify-center gap-2 text-white font-black text-lg tracking-wider transition-all ${
+                myPlayer?.cardCount === 1 
+                  ? 'bg-gradient-to-r from-rose-600 via-rose-500 to-amber-500 hover:brightness-110 active:scale-95 animate-pulse shadow-[0_0_20px_rgba(244,63,94,0.5)]' 
+                  : 'bg-slate-700 text-slate-400 opacity-50 cursor-not-allowed'
+              }`}
+            >
+              <span className="material-symbols-outlined text-2xl font-black">campaign</span>
               <span>UNO!</span>
             </button>
           </div>
@@ -435,10 +567,10 @@ export default function GameBoard() {
       {/* CLEAN BOTTOM NAVIGATION */}
       <nav className="fixed bottom-0 w-full z-40 pb-safe bg-[#111319]/95 backdrop-blur-md border-t border-white/5 left-0 right-0">
         <div className="flex items-center justify-around h-16 px-4">
-          <a className="flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-white transition-colors" href="#">
+          <button onClick={() => setShowExitConfirm(true)} className="flex flex-col items-center justify-center gap-1 text-slate-400 hover:text-white transition-colors">
             <span className="material-symbols-outlined text-[20px]">grid_view</span>
             <span className="text-[10px] font-mono tracking-wider">LOBBY</span>
-          </a>
+          </button>
           <a className="flex flex-col items-center justify-center gap-1 text-emerald-400 font-bold" href="#">
             <span className="material-symbols-outlined text-[20px]">sports_esports</span>
             <span className="text-[10px] font-mono tracking-wider">ARENA</span>
@@ -455,7 +587,7 @@ export default function GameBoard() {
       </nav>
 
       {/* MEME MODAL */}
-      <MemeModal isOpen={isMemeOpen} onClose={() => setIsMemeOpen(false)} />
+      <MemeModal isOpen={isMemeOpen} onClose={() => setIsMemeOpen(false)} onPlaySound={handlePlaySound} />
 
       {/* COLOR PICKER POPUP */}
       {pendingWildCardIndex !== null && (
@@ -524,6 +656,37 @@ export default function GameBoard() {
             <h1 className="text-5xl font-black text-amber-400 drop-shadow-[0_0_20px_rgba(245,158,11,0.8)] uppercase mb-2 animate-bounce">Winner!</h1>
             <p className="text-xl text-white font-mono font-bold bg-slate-800/80 px-4 py-2 rounded-xl border border-slate-700">
               {playersMap[gs.winnerId]?.name} DOMINATED
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* EXIT CONFIRMATION MODAL */}
+      {showExitConfirm && (
+        <div className="fixed inset-0 z-[120] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-slate-900 border-2 border-slate-700 p-6 rounded-2xl shadow-2xl w-full max-w-[320px] animate-in zoom-in-95 duration-200 text-center">
+            <div className="w-16 h-16 rounded-full bg-rose-500/20 text-rose-500 flex items-center justify-center mx-auto mb-4">
+              <span className="material-symbols-outlined text-3xl">logout</span>
+            </div>
+            <h3 className="font-extrabold text-white text-xl uppercase tracking-wide mb-2">Leave Match?</h3>
+            <p className="text-slate-400 text-sm font-mono mb-6">Are you sure you want to exit the current match?</p>
+            <div className="grid grid-cols-2 gap-3">
+              <button onClick={() => setShowExitConfirm(false)} className="py-2.5 bg-slate-800 text-slate-300 rounded-xl text-sm font-bold uppercase active:scale-95 hover:bg-slate-700 transition-colors border border-slate-700">Cancel</button>
+              <button onClick={() => { setRoomCode(null); setGameState(null); setIsOffline(false); }} className="py-2.5 bg-rose-600 text-white rounded-xl text-sm font-bold uppercase active:scale-95 hover:bg-rose-500 transition-colors border border-rose-500 shadow-[0_0_15px_rgba(225,29,72,0.4)]">Yes, Exit</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* UNO EVENT POPUP */}
+      {showUnoPopup && (
+        <div className="fixed inset-0 z-[90] bg-black/40 flex items-center justify-center pointer-events-none p-4 backdrop-blur-sm">
+          <div className="animate-in zoom-in spin-in-12 duration-500 flex flex-col items-center">
+            <h1 className="text-7xl md:text-9xl font-black text-amber-400 drop-shadow-[0_0_40px_rgba(245,158,11,1)] uppercase italic tracking-tighter -rotate-6">
+              UNO!
+            </h1>
+            <p className="text-center text-white font-bold text-2xl mt-4 bg-slate-900/80 border-2 border-amber-500 px-6 py-2 rounded-2xl shadow-xl">
+              {unoPlayerName} called it!
             </p>
           </div>
         </div>

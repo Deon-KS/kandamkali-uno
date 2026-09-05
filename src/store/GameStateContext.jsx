@@ -12,6 +12,7 @@ export function GameStateProvider({ children }) {
   const [playerId, setPlayerId] = useState(null);
   const [gameState, setGameState] = useState(null);
   const [isOffline, setIsOffline] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
 
   // Sync with Firebase if online
   useEffect(() => {
@@ -45,6 +46,7 @@ export function GameStateProvider({ children }) {
     playerId, setPlayerId,
     gameState, setGameState,
     isOffline, setIsOffline,
+    isMuted, setIsMuted,
     updateState
   };
 

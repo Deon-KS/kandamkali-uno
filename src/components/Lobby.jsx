@@ -4,7 +4,7 @@ import { createRoom, joinRoom } from '../services/firebase';
 import { initializeGame } from '../services/gameEngine';
 
 export default function Lobby() {
-  const { roomCode, setRoomCode, playerId, setPlayerId, setIsOffline, updateState, gameState } = useGameState();
+  const { roomCode, setRoomCode, playerId, setPlayerId, setIsOffline, updateState, gameState, setGameState, isMuted, setIsMuted } = useGameState();
   const [activeTab, setActiveTab] = useState('create');
   const [name, setName] = useState('Parakkum_Thalika_Hero');
   const [joinCode, setJoinCode] = useState('KRL');
@@ -13,6 +13,19 @@ export default function Lobby() {
   const [copied, setCopied] = useState(false);
   const [referee, setReferee] = useState('Salim Kumar');
   const [chaosMode, setChaosMode] = useState('100%');
+  const [ping, setPing] = useState(24);
+
+  // Network Ping Simulator
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      if (navigator.connection && navigator.connection.rtt) {
+         setPing(navigator.connection.rtt + Math.floor(Math.random() * 8) - 4);
+      } else {
+         setPing(prev => Math.max(12, Math.min(80, prev + (Math.floor(Math.random() * 11) - 5))));
+      }
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleHost = async () => {
     if (!name.trim()) return setError("Enter your Call-sign first!");
@@ -73,7 +86,8 @@ export default function Lobby() {
       chat: {}
     };
 
-    updateState(dummyState);
+    const newState = initializeGame(dummyState);
+    setGameState(newState);
   };
 
   const copyCode = () => {
@@ -93,18 +107,26 @@ export default function Lobby() {
       <header className="fixed top-0 w-full z-50 pt-safe bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] mx-auto border-b border-white/5">
         <div className="h-16 px-gutter-mobile flex items-center justify-between gap-space-xs">
           <div className="flex items-center gap-space-xs min-w-0">
+            {gameState && (
+              <button onClick={() => { setRoomCode(null); setGameState(null); setIsOffline(false); }} className="w-10 h-10 mr-1 bg-surface-container hover:bg-surface-container-high rounded-full flex items-center justify-center transition-colors active:scale-95 shadow-sm">
+                <span className="material-symbols-outlined text-on-surface">arrow_back</span>
+              </button>
+            )}
             <img alt="Rogue Uno Arcade Logo" className="h-8 w-auto object-contain shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1XrwV3KLZ23OLhbXxQOBP69A8N1NdFKlGXwoCIUIqPEp_GSNiqGJggWc3iXS3JOxj9x7kI1M9WvB4Tjgn9yNhz5HrhaelBCNPD1rzIgxghukuOI8GLehuzEtD-qSMF6i0Pq-vRYKKEZhVPAxV9gyk95eTCVisTv8ka3uCAzcPytjfwLnKiJT9whs1AqRU6KGw76JNHTa1--81pRF_DVirPhZ2l1cJYduxC75IHTi4JDEFprAGnPjpgo" />
             <div className="flex flex-col truncate">
               <span className="font-headline-md text-label-md text-primary-fixed tracking-wider uppercase truncate">KANDAMKALI UNO // CHAOS ENGINE</span>
               <div className="flex items-center gap-space-xs">
                 <span className="font-headline-lg-mobile text-headline-md text-on-surface truncate leading-tight">Lobby</span>
-                <span className="px-space-xs py-0.5 bg-surface-container-high text-primary-container font-label-sm text-label-sm uppercase tracking-wider shrink-0">24ms // KERALA SERVER</span>
+                <span className="px-space-xs py-0.5 bg-surface-container-high text-primary-container font-label-sm text-label-sm uppercase tracking-wider shrink-0 flex items-center gap-1">
+                  <span className={`w-1.5 h-1.5 rounded-full ${ping < 50 ? 'bg-emerald-500' : ping < 100 ? 'bg-amber-500' : 'bg-red-500'}`}></span>
+                  {ping}ms // ASIA-SOUTH1
+                </span>
               </div>
             </div>
           </div>
           <div className="flex items-center gap-space-xs shrink-0">
-            <button aria-label="Soundbite Toggle" className="w-11 h-11 flex items-center justify-center bg-surface-container text-primary-container active:translate-y-0.5 transition-transform">
-              <span className="material-symbols-outlined text-[20px]">volume_up</span>
+            <button onClick={() => setIsMuted(!isMuted)} aria-label="Soundbite Toggle" className="w-11 h-11 flex items-center justify-center bg-surface-container text-primary-container active:scale-95 transition-transform">
+              <span className="material-symbols-outlined text-[20px]">{isMuted ? 'volume_off' : 'volume_up'}</span>
             </button>
             <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
               <span className="material-symbols-outlined text-on-primary text-[18px]">person</span>
@@ -154,7 +176,7 @@ export default function Lobby() {
                 <span className="material-symbols-outlined text-primary-container text-[16px]">bolt</span>
                 HIGH STAKES ROAST MODE
               </span>
-              <span className="font-label-sm text-label-sm text-tertiary-fixed font-bold tracking-wider uppercase">PING: 18MS</span>
+              <span className={`font-label-sm text-label-sm font-bold tracking-wider uppercase ${ping < 50 ? 'text-emerald-400' : ping < 100 ? 'text-amber-400' : 'text-red-400'}`}>PING: {ping}MS</span>
             </div>
           </div>
 
@@ -196,11 +218,11 @@ export default function Lobby() {
               {/* SECTION: CREATE GAME */}
               {activeTab === 'create' && (
                 <div className="flex flex-col gap-space-md">
-                  <button onClick={handleHost} disabled={loading} className="w-full py-space-md bg-primary-container text-on-primary-container shadow-xl active:translate-y-1 transition-all flex items-center justify-center gap-space-xs">
+                  <button onClick={handleHost} disabled={loading} className="w-full py-space-md bg-primary-container text-on-primary-container shadow-xl active:scale-95 transition-all flex items-center justify-center gap-space-xs">
                     <span className="material-symbols-outlined text-[24px]">rocket_launch</span>
                     <span className="font-headline-md text-headline-md uppercase tracking-wider font-bold">HOST NEW ROOM</span>
                   </button>
-                  <button onClick={handlePractice} disabled={loading} className="w-full py-space-sm bg-surface-container text-primary-container shadow-md active:translate-y-1 transition-all flex items-center justify-center gap-space-xs">
+                  <button onClick={handlePractice} disabled={loading} className="w-full py-space-sm bg-surface-container text-primary-container shadow-md active:scale-95 transition-all flex items-center justify-center gap-space-xs">
                     <span className="material-symbols-outlined text-[18px]">smart_toy</span>
                     <span className="font-label-lg text-label-lg uppercase tracking-wider font-bold">PRACTICE OFFLINE WITH BOTS</span>
                   </button>
@@ -224,7 +246,7 @@ export default function Lobby() {
                         />
                       </div>
                     </div>
-                    <button onClick={handleJoin} disabled={loading} className="w-full py-space-md bg-tertiary-container text-on-tertiary-container shadow-xl active:translate-y-1 transition-all flex items-center justify-center gap-space-xs">
+                    <button onClick={handleJoin} disabled={loading} className="w-full py-space-md bg-tertiary-container text-on-tertiary-container shadow-xl active:scale-95 transition-all flex items-center justify-center gap-space-xs">
                       <span className="material-symbols-outlined text-[22px]">login</span>
                       <span className="font-headline-md text-headline-md uppercase tracking-wider font-bold">ENTER ARENA</span>
                     </button>
@@ -313,7 +335,7 @@ export default function Lobby() {
 
               {/* Big Hot Action CTA for Host */}
               {isHost ? (
-                <button onClick={handleStartRealGame} className="w-full py-space-md bg-primary-container text-on-primary-container shadow-xl active:translate-y-1 transition-all flex items-center justify-center gap-space-xs">
+                <button onClick={handleStartRealGame} className="w-full py-space-md bg-primary-container text-on-primary-container shadow-xl active:scale-95 transition-all flex items-center justify-center gap-space-xs">
                   <span className="material-symbols-outlined text-[24px]">local_fire_department</span>
                   <span className="font-headline-md text-headline-md uppercase tracking-wider font-bold">START GAME [CHAOS UNLEASHED]</span>
                 </button>
