@@ -79,9 +79,9 @@ Caption: System architecture showing client-side game engine dispatching turn st
 
 Additional Demos
 
-Live Web App: [https://kandamkali-uno.web.app](https://kandamkali-uno.web.app) (or Vercel link)
+Live Web App: (https://kandam-kali.vercel.app/) 
 
-GitHub Repository: [https://github.com/your-username/kandamkali-uno](https://github.com/your-username/kandamkali-uno)
+GitHub Repository: https://github.com/Deon-KS/kandamkali-uno
 
 Team Contributions
 Deon K S: Core card game state engine, Firebase Realtime Database schema and sync logic, and D.A.V.I chaos modifier algorithms.
