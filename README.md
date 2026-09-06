@@ -59,18 +59,18 @@ Project Documentation
 For Software:
 Screenshots
 
-![Lobby View]
-(https://drive.google.com/file/d/15pe0fHiWxOqNeBPNjDgLecIdpYHiZ5V3/view?usp=drive_link)
+Lobby View
+(<img width="1917" height="973" alt="Screenshot 2026-09-06 065306" src="https://github.com/user-attachments/assets/74c37a94-eefc-41f0-a2ac-f11648a91924" />)
 
 Caption: Neo-brutalist arcade lobby featuring the 6-character room generator, multiplayer code entry, and offline bot practice mode.
 
-![Game Arena & Active Play]
-(<img width="1916" height="967" alt="Screenshot 2026-09-06 065359" src="https://github.com/user-attachments/assets/5619a584-c04a-4c2a-b873-0131659bed81" />
-)
+Game Arena & Active Play
+(<img width="1916" height="967" alt="Screenshot 2026-09-06 065359" src="https://github.com/user-attachments/assets/5619a584-c04a-4c2a-b873-0131659bed81" />)
 
 Caption: Main table viewport showing active play, opponent card rails, player hand fan-out, and the animated turn indicator.
 
-![D.A.V.I Intervention & Meme Soundboard](<img width="1917" height="971" alt="Screenshot 2026-09-06 065447" src="https://github.com/user-attachments/assets/05c537cb-e2d4-48ff-99f3-a0bb412d65a9" />
+D.A.V.I Intervention & Meme Soundboard
+(<img width="1917" height="971" alt="Screenshot 2026-09-06 065447" src="https://github.com/user-attachments/assets/05c537cb-e2d4-48ff-99f3-a0bb412d65a9" />
 )
 
 Caption: Slide-down Chaos Alert banner triggering a hand swap alongside the sidebar chat feed with interactive Malayalam dialogue audio chips.
