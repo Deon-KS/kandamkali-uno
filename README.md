@@ -64,7 +64,8 @@ Screenshots
 
 Caption: Neo-brutalist arcade lobby featuring the 6-character room generator, multiplayer code entry, and offline bot practice mode.
 
-![Game Arena & Active Play](<img width="1916" height="967" alt="Screenshot 2026-09-06 065359" src="https://github.com/user-attachments/assets/5619a584-c04a-4c2a-b873-0131659bed81" />
+![Game Arena & Active Play]
+(<img width="1916" height="967" alt="Screenshot 2026-09-06 065359" src="https://github.com/user-attachments/assets/5619a584-c04a-4c2a-b873-0131659bed81" />
 )
 
 Caption: Main table viewport showing active play, opponent card rails, player hand fan-out, and the animated turn indicator.
