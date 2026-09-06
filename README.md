@@ -59,8 +59,7 @@ Project Documentation
 For Software:
 Screenshots
 
-![Lobby View](<img width="1917" height="973" alt="Screenshot 2026-09-06 065306" src="https://github.com/user-attachments/assets/ab2796c5-b861-41ce-8995-cf8283ab1bb9" />
-)
+![Lobby View](https://drive.google.com/file/d/15pe0fHiWxOqNeBPNjDgLecIdpYHiZ5V3/view?usp=drive_link)
 
 Caption: Neo-brutalist arcade lobby featuring the 6-character room generator, multiplayer code entry, and offline bot practice mode.
 
