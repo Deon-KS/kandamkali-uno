@@ -40,7 +40,7 @@ Installation
 
 Bash
 # Clone the repository
-git clone https://github.com/your-username/kandamkali-uno.git
+git clone https://github.com/Deon-KS/kandamkali-uno.git
 
 # Navigate into project directory
 cd kandamkali-uno
