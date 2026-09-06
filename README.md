@@ -59,23 +59,20 @@ Project Documentation
 For Software:
 Screenshots
 
-![Lobby View](assets/screenshots/lobby.png)
+![Lobby View](<img width="1917" height="973" alt="Screenshot 2026-09-06 065306" src="https://github.com/user-attachments/assets/ab2796c5-b861-41ce-8995-cf8283ab1bb9" />
+)
 
 Caption: Neo-brutalist arcade lobby featuring the 6-character room generator, multiplayer code entry, and offline bot practice mode.
 
-![Game Arena & Active Play](assets/screenshots/gameboard.png)
+![Game Arena & Active Play](<img width="1916" height="967" alt="Screenshot 2026-09-06 065359" src="https://github.com/user-attachments/assets/5619a584-c04a-4c2a-b873-0131659bed81" />
+)
 
 Caption: Main table viewport showing active play, opponent card rails, player hand fan-out, and the animated turn indicator.
 
-![D.A.V.I Intervention & Meme Soundboard](assets/screenshots/ai-chaos-sidebar.png)
+![D.A.V.I Intervention & Meme Soundboard](<img width="1917" height="971" alt="Screenshot 2026-09-06 065447" src="https://github.com/user-attachments/assets/05c537cb-e2d4-48ff-99f3-a0bb412d65a9" />
+)
 
 Caption: Slide-down Chaos Alert banner triggering a hand swap alongside the sidebar chat feed with interactive Malayalam dialogue audio chips.
-
-Diagrams
-
-![System Workflow](assets/diagrams/workflow.png)
-
-Caption: System architecture showing client-side game engine dispatching turn states to Firebase RTDB with sub-50ms sync, while the D.A.V.I engine mutates hands and triggers the client-side Web Audio pipeline.
 
 Additional Demos
 
