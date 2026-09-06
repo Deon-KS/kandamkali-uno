@@ -2,102 +2,92 @@
 
 
 
-# [Project Name] 🎯
+Team Name: Medellin
 
+Team Members
+Team Lead: Deon K S - SCMS School of Engineering and Technology
 
-## Basic Details
-### Team Name: [Name]
+Member 2: Gauthamkrishna S - SCMS School of Engineering and Technology
 
+Project Description
+Kandamkali UNO is an unfair, chaotic multiplayer card game that takes standard UNO and hands total control to D.A.V.I—an unhinged AI referee. After every single move, the AI dishes out arbitrary buffs or devastating nerfs accompanied by iconic Malayalam pop-culture roasts and audio soundbites, ruining friendships in real time.
 
-### Team Members
-- Team Lead: [Name] - [College]
-- Member 2: [Name] - [College]
-- Member 3: [Name] - [College]
+The Problem (that doesn't exist)
+Standard UNO allows players to win using skill, strategy, and card-counting. This creates a dangerous level of peace and harmony among friends, completely ruining the core purpose of card games: pure, unfiltered emotional trauma and screaming matches over a +4 card.
 
-### Project Description
-[2-3 lines about what your project does]
+The Solution (that nobody asked for)
+We built an authoritarian, deeply biased digital referee called D.A.V.I. Every time a card is played, the AI randomly intervenes—taxing the leader with extra cards, shuffling hands clockwise, revoking UNO declarations, or abruptly changing card colors—all while mocking the victims with Malayalam movie dialogue audio chips and a real-time reactive soundboard.
 
-### The Problem (that doesn't exist)
-[What ridiculous problem are you solving?]
-
-### The Solution (that nobody asked for)
-[How are you solving it? Keep it fun!]
-
-## Technical Details
-### Technologies/Components Used
-For Software:
-- [Languages used]
-- [Frameworks used]
-- [Libraries used]
-- [Tools used]
-
-For Hardware:
-- [List main components]
-- [List specifications]
-- [List tools required]
-
-### Implementation
-For Software:
-# Installation
-[commands]
-
-# Run
-[commands]
-
-### Project Documentation
+Technical Details
+Technologies/Components Used
 For Software:
 
-# Screenshots (Add at least 3)
-![Screenshot1](Add screenshot 1 here with proper name)
-*Add caption explaining what this shows*
+Languages used: JavaScript (ES6+), JSX, HTML5, CSS3
 
-![Screenshot2](Add screenshot 2 here with proper name)
-*Add caption explaining what this shows*
+Frameworks used: React 18
 
-![Screenshot3](Add screenshot 3 here with proper name)
-*Add caption explaining what this shows*
+Libraries used: Tailwind CSS, Lucide React, Firebase SDK (firebase/database)
 
-# Diagrams
-![Workflow](Add your workflow/architecture diagram here)
-*Add caption explaining your workflow*
+Tools used: Vite, Firebase Console (Realtime Database & Hosting), VS Code / Cursor AI, Git/GitHub
 
 For Hardware:
 
-# Schematic & Circuit
-![Circuit](Add your circuit diagram here)
-*Add caption explaining connections*
+N/A (Pure Software Application)
 
-![Schematic](Add your schematic diagram here)
-*Add caption explaining the schematic*
+Implementation
+For Software:
+Installation
 
-# Build Photos
-![Components](Add photo of your components here)
-*List out all components shown*
+Bash
+# Clone the repository
+git clone https://github.com/your-username/kandamkali-uno.git
 
-![Build](Add photos of build process here)
-*Explain the build steps*
+# Navigate into project directory
+cd kandamkali-uno
 
-![Final](Add photo of final product here)
-*Explain the final build*
+# Install all dependencies
+npm install
+Run
 
-### Project Demo
-# Video
-[Add your demo video link here]
-*Explain what the video demonstrates*
+Bash
+# Start local development server with Vite HMR
+npm run dev
 
-# Additional Demos
-[Add any extra demo materials/links]
+# Build for production deployment
+npm run build
+Project Documentation
+For Software:
+Screenshots
 
-## Team Contributions
-- [Name 1]: [Specific contributions]
-- [Name 2]: [Specific contributions]
-- [Name 3]: [Specific contributions]
+![Lobby View](assets/screenshots/lobby.png)
 
----
-Made with ❤️ at TinkerHub Useless Projects 
+Caption: Neo-brutalist arcade lobby featuring the 6-character room generator, multiplayer code entry, and offline bot practice mode.
 
-![Static Badge](https://img.shields.io/badge/TinkerHub-24?color=%23000000&link=https%3A%2F%2Fwww.tinkerhub.org%2F)
-![Static Badge](https://img.shields.io/badge/UselessProjects--26-26?link=https%3A%2F%2Ftinkerhub.org%2Fevents%2F1M8ORET9A1%2Fuseless-projects-3.0)
+![Game Arena & Active Play](assets/screenshots/gameboard.png)
+
+Caption: Main table viewport showing active play, opponent card rails, player hand fan-out, and the animated turn indicator.
+
+![D.A.V.I Intervention & Meme Soundboard](assets/screenshots/ai-chaos-sidebar.png)
+
+Caption: Slide-down Chaos Alert banner triggering a hand swap alongside the sidebar chat feed with interactive Malayalam dialogue audio chips.
+
+Diagrams
+
+![System Workflow](assets/diagrams/workflow.png)
+
+Caption: System architecture showing client-side game engine dispatching turn states to Firebase RTDB with sub-50ms sync, while the D.A.V.I engine mutates hands and triggers the client-side Web Audio pipeline.
+
+Additional Demos
+
+Live Web App: [https://kandamkali-uno.web.app](https://kandamkali-uno.web.app) (or Vercel link)
+
+GitHub Repository: [https://github.com/your-username/kandamkali-uno](https://github.com/your-username/kandamkali-uno)
+
+Team Contributions
+Deon K S: Core card game state engine, Firebase Realtime Database schema and sync logic, and D.A.V.I chaos modifier algorithms.
+          Frontend UI layout in React & Tailwind CSS, neo-brutalist card styling, responsive mobile drawer, and lobby room code management.
+
+Gauthamkrishna S: Audio pipeline integration (AudioManager.js), Malayalam meme soundbite curation and clipping, and automated offline bot logic
 
 
 
